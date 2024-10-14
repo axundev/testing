@@ -1,0 +1,33 @@
+### GET All
+GET http://localhost:8080/api/v1/meals/
+
+### GET 1
+GET http://localhost:8080/api/v1/meals/1
+
+### DELETE 4
+DELETE http://localhost:8080/api/v1/meals/4
+
+### Create
+POST http://localhost:8080/api/v1/meals/
+Content-Type: application/json
+
+{
+  "name": "newFood",
+  "code": "000000",
+  "description": "description-food",
+  "calories": 555,
+  "price": 10.5
+}
+
+#### Update
+PUT http://localhost:8080/api/v1/meals/
+Content-Type: application/json
+
+{
+  "id": "5",
+  "name": "nameUpdated",
+  "code": "000005",
+  "description": "description-new",
+  "calories": 0,
+  "price": 999
+}
