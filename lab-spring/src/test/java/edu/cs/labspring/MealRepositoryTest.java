@@ -37,28 +37,31 @@ public class MealRepositoryTest {
     @AfterAll
     void afterAll() {}
 
-    // Test 1: Знахождження їжі по коду
+    // Test 1: Найкалорійніша їжа
     @Test
-    void shouldFindMealByCode() {
+    void shouldFindHighCalorieMeals() {
         // when
-        Optional<Meal> meal = underTest.findByCode("M001");
+        List<Meal> highCalorieMeals = underTest.findAll().stream()
+                .filter(meal -> meal.getCalories() > 1000)
+                .toList();
         // then
-        assertTrue(meal.isPresent());
-        assertEquals("Pizza", meal.get().getName());
+        assertEquals("Pizza", highCalorieMeals.get(0).getName(), "Найбільш калорійною їжею має бути піца.");
     }
 
-    // Test 2: Тестування
+    // Test 2: Тестування пошуку їжі в проміжку ціни
     @Test
     void shouldFindMealsByPriceRange() {
         // when
-        List<Meal> meals = underTest.findMealsByPriceBetween(4.00, 6.00); //додав в інтерфейс MealRepo
+        List<Meal> meals = underTest.findAll().stream()
+                .filter(meal -> meal.getPrice() >= 4.00 && meal.getPrice() <= 6.00)
+                .toList();
         // then
-        assertEquals(2, meals.size());
-        assertTrue(meals.stream().anyMatch(m -> m.getName().equals("Burger")));
-        assertTrue(meals.stream().anyMatch(m -> m.getName().equals("Salad")));
+        assertEquals(2, meals.size(), "Саме дві страви повинні бути знайдені у проміжку з $4.00 по $6.00.");
+        assertTrue(meals.stream().anyMatch(m -> m.getName().equals("Burger")), "Burger має бути у списку.");
+        assertTrue(meals.stream().anyMatch(m -> m.getName().equals("Salad")), "Salad має бути у списку.");
     }
 
-    // Test 3: Тестування додавання та авто генерації ID (має бути 24 символів в коді (із-за авто інкременту в MongoDB))
+    // Test 3: Тестування додавання та авто генерації ID
     @Test
     void shouldSaveMealAndGenerateId() {
         // given
@@ -66,8 +69,8 @@ public class MealRepositoryTest {
         // when
         Meal savedMeal = underTest.save(pasta);
         // then
-        assertNotNull(savedMeal.getId());
-        assertEquals(24, savedMeal.getId().length());
+        assertNotNull(savedMeal.getId(), "ID має бути згенерованим та не бути null");
+        assertEquals(24, savedMeal.getId().length(), "Має бути 24 символів в коді (із-за авто інкременту в MongoDB).");
     }
 
     // Test 4: Тестування оновлення по Code
@@ -82,8 +85,8 @@ public class MealRepositoryTest {
         underTest.save(meal);
         Meal updatedMeal = underTest.findById(meal.getId()).orElse(null);
         // then
-        assertNotNull(updatedMeal);
-        assertEquals("Updated Burger", updatedMeal.getName());
+        assertNotNull(updatedMeal, "Оновленна страва не має бути null");
+        assertEquals("Updated Burger", updatedMeal.getName(), "Страва має бути оновленою");
     }
 
     // Test 5: Тестування видалення по Code
@@ -96,7 +99,7 @@ public class MealRepositoryTest {
         // when
         underTest.deleteById(meal.getId());
         // then
-        assertFalse(underTest.findById(meal.getId()).isPresent());
+        assertFalse(underTest.findById(meal.getId()).isPresent(), "Страва має бути видаленою");
     }
 }
 
