@@ -18,5 +18,4 @@ import java.util.Optional;
 @Repository
 public interface MealRepository extends MongoRepository<Meal, String> {
     Optional<Meal> findByCode(String code);
-    List<Meal> findMealsByPriceBetween(double minPrice, double maxPrice);
 }
